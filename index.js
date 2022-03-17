@@ -163,6 +163,7 @@ function refreshTable() {
 	cardTable.innerHTML = 	`<thead> 
 								<tr>
 									<th>Name</th>
+									<th>Rarity</th>
 									<th>Plays</th>
 									<th>Wins</th>
 									<th>Win Rate</th>
@@ -178,6 +179,7 @@ function refreshTable() {
 							<tfoot> 
 								<tr>
 									<th>Name</th>
+									<th>Rarity</th>
 									<th>Plays</th>
 									<th>Wins</th>
 									<th>Win Rate</th>
@@ -201,18 +203,22 @@ function refreshTable() {
 			let cell6 = row.insertCell(6);
 			let cell7 = row.insertCell(7);
 			let cell8 = row.insertCell(8);
+			let cell9 = row.insertCell(9);
 			let winrate = Math.ceil(100 * value.winCount / value.playCount);
 			let pickrate = Math.ceil(100 * value.pickCount / value.seeCount);
 			let pickxwin = Math.ceil(winrate * pickrate / 100);
 			cell0.innerHTML = key;
-			cell1.innerHTML = isNaN(value.playCount) ? 0 : value.playCount;
-			cell2.innerHTML = isNaN(value.winCount) ? 0 : value.winCount;
-			cell3.innerHTML = isNaN(winrate) ? 0 : winrate;
-			cell4.innerHTML = isNaN(value.seeCount) ? 0 : value.seeCount;
-			cell5.innerHTML = isNaN(value.pickCount) ? 0 : value.pickCount;
-			cell6.innerHTML = isNaN(pickrate) ? 0 : pickrate;
-			cell7.innerHTML = isNaN(pickxwin) ? 0 : pickxwin;
-			cell8.innerHTML = "TBD";
+			cell1.innerHTML = value.Rarity;
+			cell2.innerHTML = isNaN(value.playCount) ? 0 : value.playCount;
+			cell3.innerHTML = isNaN(value.winCount) ? 0 : value.winCount;
+			cell4.innerHTML = isNaN(winrate) ? 0 : winrate;
+			cell5.innerHTML = isNaN(value.seeCount) ? 0 : value.seeCount;
+			cell6.innerHTML = isNaN(value.pickCount) ? 0 : value.pickCount;
+			cell7.innerHTML = isNaN(pickrate) ? 0 : pickrate;
+			cell8.innerHTML = isNaN(pickxwin) ? 0 : pickxwin;
+			cell9.innerHTML = "TBD";
+			
+			addColors(cell0, value);
 		}
 	}
 	table = $('#cardTable').dataTable( {
@@ -266,6 +272,27 @@ function refreshTable() {
 			}
 		]
 	} );
+}
+
+function addColors(cell0, value) {
+	if(value.Color === "Red") {
+		cell0.style.backgroundColor = "Coral";
+	}
+	if(value.Color === "Green") {
+		cell0.style.backgroundColor = "MediumSeaGreen";
+	}
+	if(value.Color === "Blue") {
+		cell0.style.backgroundColor = "SteelBlue";
+	}
+	if(value.Color === "Purple") {
+		cell0.style.backgroundColor = "mediumpurple";
+	}
+	if(value.Color === "Curse") {
+		cell0.style.backgroundColor = 'grey';
+	}
+	if(value.Color === "Colorless") {
+		cell0.style.backgroundColor = 'silver';
+	}
 }
 
 function getClassName(color) {
