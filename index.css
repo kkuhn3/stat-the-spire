@@ -1,0 +1,30 @@
+div {
+  text-align: center;
+}
+body {
+  background-color: #DDE9F5;
+}
+.dt-button {
+  width: 90px;
+}
+.dt-button.toggleActive {
+  background-color:#A1A1A1;
+}
+th, td {
+  text-align: center;
+  padding: 4px;
+}
+tr{
+  background-color: #f2f2f2;
+}
+table {
+  border-spacing: 0;
+  border: 1px solid #ddd;
+  color: black;
+  overflow-y:auto;
+  width: 100%;
+}
+.dataTables_scrollBody {
+  overflow-x:hidden !important;
+  overflow-y:auto !important;
+}
