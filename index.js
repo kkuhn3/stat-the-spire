@@ -19,6 +19,13 @@ async function loadData() {
 		method: 'GET'
 	});
 	dictoCards = await cardRes.json();
+	for (const [key, value] of Object.entries(dictoCards)) {
+		value.playCount = 0;
+		value.winCount = 0;
+		value.seeCount = 0;
+		value.pickCount = 0;
+		value.tbdFloors = 0;
+	}
 	
 	const loFilesRes = await fetch('./list.php', {
 		method: 'GET'
@@ -31,29 +38,17 @@ async function loadData() {
 			method: 'GET'
 		});
 		const json = await file.json();
-		//json.is_ascension_mode
+		let endFloor = json.floor_reached;
+		if(endFloor < 51) {
+			endFloor = 51;
+		}
 		for(let j = 0; j < json.master_deck.length; j++) {
 			let cardName = json.master_deck[j];
 			cardName = replaceIdWithName(cardName);
 			if(dictoCards[cardName]) {
-				if(dictoCards[cardName].playCount) {
-					dictoCards[cardName].playCount++;
-				}
-				else {
-					dictoCards[cardName].playCount = 1;
-				}
-				if(dictoCards[cardName].winCount) {
-					if(json.victory) {
-						dictoCards[cardName].winCount++;
-					}
-				}
-				else {
-					if(json.victory) {
-						dictoCards[cardName].winCount = 1;
-					}
-					else {
-						dictoCards[cardName].winCount = 0;
-					}
+				dictoCards[cardName].playCount++;
+				if(json.victory) {
+					dictoCards[cardName].winCount++;
 				}
 			}
 			else {
@@ -65,12 +60,7 @@ async function loadData() {
 				let cardName = json.card_choices[k].not_picked[l];
 				cardName = replaceIdWithName(cardName);
 				if(dictoCards[cardName]) {
-					if(dictoCards[cardName].seeCount) {
-						dictoCards[cardName].seeCount++;
-					}
-					else {
-						dictoCards[cardName].seeCount = 1;
-					}
+					dictoCards[cardName].seeCount++;
 				}
 				else {
 					loMiaCards.add(cardName);
@@ -79,18 +69,9 @@ async function loadData() {
 			let cardName = json.card_choices[k].picked;
 			cardName = replaceIdWithName(cardName);
 			if(dictoCards[cardName]) {
-				if(dictoCards[cardName].seeCount) {
-					dictoCards[cardName].seeCount++;
-				}
-				else {
-					dictoCards[cardName].seeCount = 1;
-				}
-				if(dictoCards[cardName].pickCount) {
-					dictoCards[cardName].pickCount++;
-				}
-				else {
-					dictoCards[cardName].pickCount = 1;
-				}
+				dictoCards[cardName].seeCount++;
+				dictoCards[cardName].pickCount++;
+				dictoCards[cardName].tbdFloors = dictoCards[cardName].tbdFloors + 100 * (endFloor - json.card_choices[k].floor) / endFloor;
 			}
 			else {
 				loMiaCards.add(cardName);
@@ -171,7 +152,7 @@ function refreshTable() {
 									<th>Picks</th>
 									<th>Pick Rate</th> 
 									<th>Pick x Win</th> 
-									<th>Floors Climbed</th>
+									<th>Floor%</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -187,7 +168,7 @@ function refreshTable() {
 									<th>Picks</th>
 									<th>Pick Rate</th> 
 									<th>Pick x Win</th>
-									<th>Floors Climbed</th>
+									<th>Floor%</th>
 								</tr>
 							</tfoot>`;
 							
@@ -207,6 +188,7 @@ function refreshTable() {
 			let winrate = Math.ceil(100 * value.winCount / value.playCount);
 			let pickrate = Math.ceil(100 * value.pickCount / value.seeCount);
 			let pickxwin = Math.ceil(winrate * pickrate / 100);
+			let tbdFloors = Math.ceil(value.tbdFloors / value.pickCount);
 			cell0.innerHTML = key;
 			cell1.innerHTML = value.Rarity;
 			cell2.innerHTML = isNaN(value.playCount) ? 0 : value.playCount;
@@ -216,7 +198,7 @@ function refreshTable() {
 			cell6.innerHTML = isNaN(value.pickCount) ? 0 : value.pickCount;
 			cell7.innerHTML = isNaN(pickrate) ? 0 : pickrate;
 			cell8.innerHTML = isNaN(pickxwin) ? 0 : pickxwin;
-			cell9.innerHTML = "TBD";
+			cell9.innerHTML = isNaN(tbdFloors) ? 0 : tbdFloors;
 			
 			addColors(cell0, value);
 		}
