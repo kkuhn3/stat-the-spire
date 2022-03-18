@@ -71,7 +71,7 @@ async function loadData() {
 			if(dictoCards[cardName]) {
 				dictoCards[cardName].seeCount++;
 				dictoCards[cardName].pickCount++;
-				dictoCards[cardName].tbdFloors = dictoCards[cardName].tbdFloors + 100 * (endFloor - json.card_choices[k].floor) / endFloor;
+				dictoCards[cardName].tbdFloors = dictoCards[cardName].tbdFloors + 100 * (json.floor_reached - json.card_choices[k].floor) / endFloor;
 			}
 			else {
 				loMiaCards.add(cardName);
