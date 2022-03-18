@@ -251,6 +251,13 @@ function refreshTable() {
 				action: function ( e, dt, node, config ) {
 					swapColor('Curse');
 				}
+			},
+			{
+				text: 'Played',
+				className: getClassName('Played'),
+				action: function ( e, dt, node, config ) {
+					swapColor('Played');
+				}
 			}
 		]
 	} );
@@ -293,6 +300,17 @@ function isValid(card) {
 	}
 	if(colorFilter.length < 1) {
 		return true;
+	}
+	if(colorFilter.includes('Played')) {
+		if(card.playCount < 10) {
+			return false;
+		}
+		if(card.pickCount < 10) {
+			return false;
+		}
+		if(colorFilter.length < 2) {
+			return true;
+		}
 	}
 	if(colorFilter.includes(card.Color)) {
 		return true;
